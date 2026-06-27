@@ -1,4 +1,4 @@
-# PyarelalAI Backend
+# ParallelAI Backend
 
 This repository contains the backend service for PyarelalAI. It is a TypeScript + Express application that provides authentication, user credit management, AI-assisted project creation, real-time WebSocket updates, and background job processing for code generation.
 
