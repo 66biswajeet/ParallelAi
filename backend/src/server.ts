@@ -16,12 +16,28 @@ const app = express();
 const httpServer = createServer(app);
 
 // Middleware
+const parseTrustedOrigins = (): string[] => {
+  const origins = process.env.TRUSTED_ORIGINS?.trim();
+  if (!origins) return ["http://localhost:5173"];
+
+  try {
+    const parsed = JSON.parse(origins);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch {
+    // Fall back to comma-separated parsing if JSON parse fails
+  }
+
+  return origins.split(",").map((origin) => origin.trim());
+};
+
 app.use(
   cors({
-    origin: process.env.TRUSTED_ORIGINS?.split(",") || [
-      "http://localhost:5173",
-    ],
+    origin: parseTrustedOrigins(),
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 app.use(express.json());

@@ -30,36 +30,29 @@ export const createProjectController = async (
       project, // Returns the base template tracking container to let frontend hook up WebSockets
     });
   } catch (error: any) {
-    // Catch Zod parsing issues and return a clean 400 Bad Request array response
-    if (error.name === "ZodError") {
+    console.error("❌ Controller Error:", error);
+
+    // Safely check if it's a Zod validation error before using .map()
+    if (
+      error &&
+      typeof error === "object" &&
+      "errors" in error &&
+      Array.isArray(error.errors)
+    ) {
       res.status(400).json({
         success: false,
-        errors: error.errors.map((err: any) => err.message),
+        message: "Validation failed",
+        errors: error.errors.map((err: any) => ({
+          field: err.path.join("."),
+          message: err.message,
+        })),
       });
-      return;
     }
 
-    if (error.message === "INSUFFICIENT_CREDITS") {
-      res.status(403).json({
-        success: false,
-        message:
-          "Operation Blocked: Insufficient credit balance allocations remaining on this profile.",
-      });
-      return;
-    }
-
-    if (error.message === "USER_NOT_FOUND") {
-      res.status(404).json({
-        success: false,
-        message: "Authorized identity context missing.",
-      });
-      return;
-    }
-
-    console.error("Project Core Compilation Fault Event:", error.message);
-    res.status(500).json({
+    // Fallback for standard or database errors
+    res.status(error.status || 500).json({
       success: false,
-      message: "Internal transactional processing compilation error.",
+      message: error.message || "An unexpected server error occurred.",
     });
   }
 };
