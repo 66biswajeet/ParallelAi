@@ -9,3 +9,22 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+api.interceptors.request.use(
+  (config) => {
+    const token = 
+      localStorage.getItem("auth_token") || 
+      localStorage.getItem("authToken") || 
+      localStorage.getItem("auth_bearer_token") ||
+      sessionStorage.getItem("auth_token") || 
+      sessionStorage.getItem("authToken") || 
+      sessionStorage.getItem("auth_bearer_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

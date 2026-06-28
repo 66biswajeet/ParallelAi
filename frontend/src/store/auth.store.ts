@@ -24,7 +24,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return null;
     }
   })(),
-  isAuthenticated: !!localStorage.getItem("pyarelal_user"),
+  isAuthenticated: !!localStorage.getItem("pyarelal_user") && (
+    !!localStorage.getItem("auth_token") || 
+    !!localStorage.getItem("authToken") || 
+    !!localStorage.getItem("auth_bearer_token") ||
+    !!sessionStorage.getItem("auth_token") || 
+    !!sessionStorage.getItem("authToken") || 
+    !!sessionStorage.getItem("auth_bearer_token")
+  ),
   isLoading: false,
   error: null,
 
@@ -34,6 +41,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await authService.signIn(data);
       if (response.success && response.user) {
         localStorage.setItem("pyarelal_user", JSON.stringify(response.user));
+        if (response.token) {
+          localStorage.setItem("auth_token", response.token);
+          localStorage.setItem("authToken", response.token);
+          localStorage.setItem("auth_bearer_token", response.token);
+        }
         set({ user: response.user, isAuthenticated: true, error: null });
         // Connect socket when user is logged in
         socket.connect();
@@ -55,6 +67,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await authService.signUp(data);
       if (response.success && response.user) {
         localStorage.setItem("pyarelal_user", JSON.stringify(response.user));
+        if (response.token) {
+          localStorage.setItem("auth_token", response.token);
+          localStorage.setItem("authToken", response.token);
+          localStorage.setItem("auth_bearer_token", response.token);
+        }
         set({ user: response.user, isAuthenticated: true, error: null });
         // Connect socket when user is logged in
         socket.connect();
@@ -78,6 +95,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error("Logout request error: ", err);
     } finally {
       localStorage.removeItem("pyarelal_user");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("auth_bearer_token");
+      sessionStorage.removeItem("auth_token");
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("auth_bearer_token");
       set({ user: null, isAuthenticated: false, isLoading: false, error: null });
       socket.disconnect();
     }
@@ -114,12 +137,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       } else {
         // Session invalid or expired
         localStorage.removeItem("pyarelal_user");
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("auth_bearer_token");
+        sessionStorage.removeItem("auth_token");
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("auth_bearer_token");
         set({ user: null, isAuthenticated: false });
         socket.disconnect();
       }
     } catch (err) {
       // If unauthorized, clear frontend auth state
       localStorage.removeItem("pyarelal_user");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("auth_bearer_token");
+      sessionStorage.removeItem("auth_token");
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("auth_bearer_token");
       set({ user: null, isAuthenticated: false });
       socket.disconnect();
     } finally {
