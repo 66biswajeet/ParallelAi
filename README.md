@@ -1,4 +1,4 @@
-# ParallelAI Backend
+# ParallelAI Backend Architecture
 <!-- Tech Stack Badges -->
 <p align="left">
   <img src="https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
