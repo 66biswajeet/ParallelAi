@@ -24,8 +24,15 @@ export const protectRoute = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    // Read cookie token from the custom headers stream
-    const token = req.cookies.auth_session;
+    // Read cookie token from the custom headers stream or fallback to Authorization header
+    let token = req.cookies?.auth_session;
+
+    if (!token && req.headers.authorization) {
+      const parts = req.headers.authorization.split(" ");
+      if (parts.length === 2 && parts[0] === "Bearer") {
+        token = parts[1];
+      }
+    }
 
     if (!token) {
       res.status(401).json({
