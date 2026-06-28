@@ -1,4 +1,19 @@
-# ParallelAI Backend
+# ParallelAI Backend Architecture
+
+<!-- Tech Stack Badges -->
+<p align="left">
+  <img src="https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Express-5.2.1-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/PostgreSQL-Latest-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Drizzle_ORM-0.45.2-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" alt="Drizzle ORM" />
+  <img src="https://img.shields.io/badge/Neon_Serverless-1.1.0-00E599?style=for-the-badge&logo=neon&logoColor=black" alt="Neon" />
+  <img src="https://img.shields.io/badge/BullMQ-5.79.1-990000?style=for-the-badge&logo=bull&logoColor=white" alt="BullMQ" />
+  <img src="https://img.shields.io/badge/Redis-5.11.1-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  <img src="https://img.shields.io/badge/Socket.io-4.8.3-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="Socket.io" />
+  <img src="https://img.shields.io/badge/Zod-4.4.3-3E67B1?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" />
+  <img src="https://img.shields.io/badge/Google_GenAI-2.10.0-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Google GenAI" />
+  <img src="https://img.shields.io/badge/JSON_Web_Tokens-9.0.3-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white" alt="JWT" />
+</p>
 
 This repository contains the backend service for PyarelalAI. It is a TypeScript + Express application that provides authentication, user credit management, AI-assisted project creation, real-time WebSocket updates, and background job processing for code generation.
 
