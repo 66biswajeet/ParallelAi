@@ -1,8 +1,9 @@
-# PyarelalAI Backend
+# ParallelAI Backend
 
 This repository contains the backend service for PyarelalAI. It is a TypeScript + Express application that provides authentication, user credit management, AI-assisted project creation, real-time WebSocket updates, and background job processing for code generation.
 
 The backend is built around:
+
 - Express.js for REST APIs
 - Drizzle ORM with PostgreSQL
 - Redis + BullMQ for background workers
@@ -29,11 +30,13 @@ This service is designed for a modern full-stack experience where the UI can rec
 ## 2. Tech Stack
 
 ### Runtime
+
 - TypeScript: 6.0.3
 - Node.js-compatible ESM setup
 - Express: 5.2.1
 
 ### Database & ORM
+
 - PostgreSQL
 - Drizzle ORM: 0.45.2
 - Drizzle Kit: 0.31.10
@@ -41,24 +44,29 @@ This service is designed for a modern full-stack experience where the UI can rec
 - @neondatabase/serverless: 1.1.0
 
 ### Authentication & Security
+
 - jsonwebtoken: 9.0.3
 - bcryptjs: 3.0.3
 - cookie-parser: 1.4.7
 - cors: 2.8.6
 
 ### Background Jobs & Real-Time Communication
+
 - bullmq: 5.79.1
 - ioredis: 5.11.1
 - socket.io: 4.8.3
 
 ### Validation & Utilities
+
 - zod: 4.4.3
 - dotenv: 17.4.2
 
 ### AI Integration
+
 - @google/genai: 2.10.0
 
 ### Development Tools
+
 - tsx: 4.22.4
 - ts-node: 10.9.2
 - nodemon: 3.1.14
@@ -110,6 +118,7 @@ backend/
 ## 4. Installation
 
 ### Prerequisites
+
 - Node.js and npm installed
 - Docker installed (for local PostgreSQL)
 - Redis running locally or accessible via URL
@@ -146,6 +155,7 @@ GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### Variable descriptions
+
 - PORT: Port for the backend server
 - NODE_ENV: Environment mode
 - DATABASE_URL: PostgreSQL connection string
@@ -165,36 +175,43 @@ The package.json includes the following scripts:
 ```bash
 npm run start
 ```
+
 Starts the server with tsx.
 
 ```bash
 npm run server
 ```
+
 Starts the server in development mode with nodemon.
 
 ```bash
 npm run build
 ```
+
 Compiles the TypeScript project into the dist folder.
 
 ```bash
 npm run db:generate
 ```
+
 Generates Drizzle migration files.
 
 ```bash
 npm run db:migrate
 ```
+
 Runs migrations using the migration script.
 
 ```bash
 npm run db:studio
 ```
+
 Opens the Drizzle Studio UI.
 
 ```bash
 npm run db:push
 ```
+
 Pushes the current schema directly to the database.
 
 ---
@@ -204,7 +221,9 @@ Pushes the current schema directly to the database.
 The backend uses Drizzle ORM schemas stored in src/models.
 
 ### Users
+
 The users table stores:
+
 - id
 - email
 - password
@@ -215,7 +234,9 @@ The users table stores:
 - updatedAt
 
 ### Website Projects
+
 The website_projects table stores:
+
 - id
 - name
 - initialPrompt
@@ -235,17 +256,21 @@ These models are connected through the userId foreign key.
 The backend exposes the following main routes.
 
 ### Authentication
+
 - POST /api/auth/sign-up
 - POST /api/auth/sign-in
 - POST /api/auth/sign-out
 
 ### User
+
 - GET /api/user/credits
 
 ### Projects
+
 - POST /api/project/create-project
 
 ### Auth protection
+
 Protected routes use the protectRoute middleware, which checks the auth_session cookie and verifies the JWT.
 
 ---
@@ -253,6 +278,7 @@ Protected routes use the protectRoute middleware, which checks the auth_session 
 ## 9. Request Flow Examples
 
 ### Sign up
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/sign-up \
   -H "Content-Type: application/json" \
@@ -264,6 +290,7 @@ curl -X POST http://localhost:5000/api/auth/sign-up \
 ```
 
 ### Create a project
+
 ```bash
 curl -X POST http://localhost:5000/api/project/create-project \
   -H "Content-Type: application/json" \
@@ -279,6 +306,7 @@ curl -X POST http://localhost:5000/api/project/create-project \
 ## 10. Background Jobs and Real-Time Generation
 
 When a project is created:
+
 1. The app validates the payload
 2. It checks whether the user has sufficient credits
 3. It deducts credits and creates a project record
@@ -287,6 +315,7 @@ When a project is created:
 6. The generated code is streamed over Socket.IO and saved to the database
 
 This enables the frontend to receive status updates such as:
+
 - refining_prompt
 - streaming_code
 - completed
@@ -305,6 +334,7 @@ socket.emit("join_project_canvas", projectId);
 ```
 
 The server then broadcasts:
+
 - generation_status
 - code_stream_chunk
 
@@ -323,6 +353,7 @@ The server then broadcasts:
 ## 13. Suggested Next Steps
 
 Possible improvements for the backend:
+
 - Add environment-based validation for required secrets
 - Add unit and integration tests
 - Add rate limiting and request throttling
@@ -344,10 +375,11 @@ npm run server
 ```
 
 Then open the API at:
+
 ```text
 http://localhost:5000
 ```
 
 ---
 
-Design and Developed by BISWAJEET JENA 
+Design and Developed by BISWAJEET JENA

@@ -12,11 +12,10 @@ export const ProjectCanvasPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user, fetchCredits } = useAuthStore();
   const {
-    projects,
     currentProject,
     generationStatus,
     streamedCode,
-    setCurrentProject,
+    loadProjectById,
     setGenerationStatus,
     appendCodeChunk,
     saveCompletedProject,
@@ -24,19 +23,31 @@ export const ProjectCanvasPage: React.FC = () => {
   
   const navigate = useNavigate();
   const [connectionError, setConnectionError] = useState(false);
+  const [isFetchingProject, setIsFetchingProject] = useState(true);
 
   // Sync active project state from URL parameter
   useEffect(() => {
+    let active = true;
     if (id && user?.id) {
-      const match = projects.find((p) => p.id === id);
-      if (match) {
-        setCurrentProject(match);
-      } else {
-        // Redirection guard if project not found
-        navigate("/dashboard");
-      }
+      setIsFetchingProject(true);
+      loadProjectById(id)
+        .then(() => {
+          if (active) {
+            setIsFetchingProject(false);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load project:", err);
+          if (active) {
+            setIsFetchingProject(false);
+            navigate("/dashboard");
+          }
+        });
     }
-  }, [id, projects, user?.id]);
+    return () => {
+      active = false;
+    };
+  }, [id, user?.id]);
 
   // Handle WebSocket bindings
   useEffect(() => {
@@ -90,7 +101,7 @@ export const ProjectCanvasPage: React.FC = () => {
     };
   }, [id, currentProject?.id, user?.id]);
 
-  if (!currentProject) {
+  if (isFetchingProject || !currentProject) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
         <div className="text-center p-6 bg-white border border-gray-200 rounded-xl shadow-premium">

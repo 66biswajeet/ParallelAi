@@ -2,7 +2,7 @@
 import { db } from "../lib/db.js";
 import { websiteProjects } from "../models/project.model.js";
 import { users } from "../models/user.model.js";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, desc, and } from "drizzle-orm";
 import { codeGenerationQueue } from "../lib/queue.js";
 
 export class ProjectService {
@@ -54,5 +54,35 @@ export class ProjectService {
 
       return newProject;
     });
+  }
+
+  async getUserProjectsService(userId: string) {
+    const projects = await db
+      .select({
+        id: websiteProjects.id,
+        name: websiteProjects.name,
+        initialPrompt: websiteProjects.initialPrompt,
+        updatedAt: websiteProjects.updatedAt,
+        createdAt: websiteProjects.createdAt,
+      })
+      .from(websiteProjects)
+      .where(eq(websiteProjects.userId, userId))
+      .orderBy(desc(websiteProjects.updatedAt)); // Newest or recently modified items first
+
+    return projects;
+  }
+
+  async getProjectById(userId: string, projectId: string) {
+    const [project] = await db
+      .select()
+      .from(websiteProjects)
+      .where(
+        and(
+          eq(websiteProjects.id, projectId),
+          eq(websiteProjects.userId, userId), // Properly enforces ownership guard!
+        ),
+      );
+
+    return project;
   }
 }

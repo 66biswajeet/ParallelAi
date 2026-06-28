@@ -42,11 +42,12 @@ export const signUp = async (req: Request, res: Response) => {
       })
       .returning();
 
-    generateTokenAndSetCookie(res, newUser.id);
+    const token = generateTokenAndSetCookie(res, newUser.id);
 
     res.status(200).json({
       success: true,
       message: "Identity verified and profile established.",
+      token,
       user: {
         id: newUser.id,
         email: newUser.email,
@@ -93,10 +94,11 @@ export const signIn = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Note: In your next layer, you will cross-compare incoming passwords against hashed variants
-    generateTokenAndSetCookie(res, user.id);
+    const token = generateTokenAndSetCookie(res, user.id);
 
     res.status(200).json({
       success: true,
+      token,
       user: {
         id: user.id,
         email: user.email,

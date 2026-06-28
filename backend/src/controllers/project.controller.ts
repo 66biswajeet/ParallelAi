@@ -56,3 +56,75 @@ export const createProjectController = async (
     });
   }
 };
+
+export const getAllUserProjectsController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const authenticatedUserId = req.userId!;
+
+    if (!authenticatedUserId) {
+      res.status(401).json({
+        success: false,
+        message: "Authentication tracking token context is missing or expired.",
+      });
+      return;
+    }
+
+    const projectCollection =
+      await projectService.getUserProjectsService(authenticatedUserId);
+
+    res.status(200).json({
+      success: true,
+      message: "User workspace directory fetched successfully.",
+      projects: projectCollection,
+    });
+  } catch (error: any) {
+    console.error("❌ Error in getAllUserProjectsController:", error.message);
+    res.status(500).json({
+      success: false,
+      message:
+        "Failed to compile the requested project matrix from the cloud cluster.",
+    });
+  }
+};
+
+export const getProjectByIdController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const authenticatedUserId = req.userId!;
+    const projectId = req.params.projectId as string;
+
+    if (!authenticatedUserId) {
+      res.status(401).json({ success: false, message: "Unauthorized." });
+      return;
+    }
+
+    const project = await projectService.getProjectById(
+      authenticatedUserId,
+      projectId,
+    );
+
+    if (!project) {
+      res.status(404).json({
+        success: false,
+        message: "Project not found or unauthorized access.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      project,
+    });
+  } catch (error: any) {
+    console.error("❌ Error in getProjectByIdController:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching project details.",
+    });
+  }
+};
